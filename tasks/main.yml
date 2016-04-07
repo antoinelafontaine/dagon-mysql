@@ -1,0 +1,17 @@
+---
+- name: Install mysql.
+  homebrew:
+    name: "{{ mysql_package }}"
+    state: present
+
+- name: Copy mysql plist to Launchdeamons folder.
+  copy:
+    src: "/usr/local/opt/{{ mysql_package }}/homebrew.mxcl.{{ mysql_package }}.plist"
+    dest: /Library/LaunchDaemons
+    force: no
+    group: admin
+  become: yes
+  notify: Restart mysql.
+
+- name: Restart mysql.
+  shell: brew services restart "{{ mysql_package }}"
